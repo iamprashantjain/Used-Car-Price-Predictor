@@ -1,0 +1,43 @@
+stages:
+  data_ingestion:
+    cmd: python src/components/data_ingestion.py
+    deps:
+      - src/components/data_ingestion.py
+      - artifacts/scraped_data/cars24_scraped_data.csv
+    outs:
+      - artifacts/data_ingestion/raw/cars24_scraped_data.csv
+      - artifacts/data_ingestion/train/train.csv
+      - artifacts/data_ingestion/test/test.csv
+
+
+  data_transformation:
+    cmd: python src/components/data_transformation.py
+    deps:
+      - src/components/data_transformation.py
+      - artifacts/data_ingestion/train/train.csv
+      - artifacts/data_ingestion/test/test.csv
+    outs:
+      - artifacts/transformed_data/train/train.csv
+      - artifacts/transformed_data/test/test.csv
+
+  model_training:
+    cmd: python src/components/model_trainer.py
+    deps:
+      - src/components/model_trainer.py
+      - artifacts/transformed_data/train/train.csv
+      - artifacts/transformed_data/test/test.csv
+      - artifacts/preprocessor/preprocessor.pkl
+      - artifacts/preprocessor/selected_features.pkl
+    params:
+      - model_training.model_alpha
+    outs:
+      - artifacts/model/model.pkl
+      - artifacts/model/model_info.json
+
+
+  register_model:
+    cmd: python src/components/register_model.py
+    deps:
+      - src/components/register_model.py
+      - artifacts/model/model_info.json
+    params: []
