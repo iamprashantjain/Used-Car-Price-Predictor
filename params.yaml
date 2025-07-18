@@ -1,5 +1,47 @@
 data_ingestion:
-  test_size : 0.3
-
-model_training:
-  model_alpha : 0.1
+  input_file_path: s3://prashant-mlops-bucket/cars24_v3.xlsx
+  test_size: 0.2
+  random_state: 42
+  
+  numerical_cols:
+    - listingPrice
+    - odometer
+    - fitnessAge
+    - cashDownPayment
+    - emiStartingValue
+    - emiEndingValue
+    - roiMinDiscounted
+    - roiMaxDiscounted
+    - roiMinOriginal
+    - roiMaxOriginal
+    - emiOriginalStartingValue
+    - emiOriginalEndingValue
+    - featureCount
+    - avgEmi
+  
+  categorical_cols:
+    - make
+    - model
+    - variant
+    - year
+    - transmissionType
+    - bodyType
+    - fuelType
+    - ownership
+    - color
+    - 360DegreeCamera
+    - AlloyWheels
+    - AppleCarplayAndroidAuto
+    - Bluetooth
+    - CruiseControl
+    - GpsNavigation
+    - InfotainmentSystem
+    - LeatherSeats
+    - ParkingAssist
+    - PushButtonStart
+    - RearAc
+    - SpecialRegNo
+    - Sunroof/Moonroof
+    - TopModel
+    - Tpms
+    - VentilatedSeats

@@ -1,0 +1,4 @@
+[core]
+    remote = prashant-mlops-bucket
+['remote "prashant-mlops-bucket"']
+    url = s3://prashant-mlops-bucket
