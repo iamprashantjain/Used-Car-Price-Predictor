@@ -1,9 +1,11 @@
+import os
 from mlflow.tracking import MlflowClient
 import mlflow
 import dagshub
 import time
 
 # Initialize Dagshub and MLflow
+dagshub.auth.add_app_token(os.getenv("DAGSHUB_TOKEN"))
 dagshub.init(repo_owner='iamprashantjain', repo_name='Used-Car-Price-Predictor', mlflow=True)
 mlflow.set_tracking_uri("https://dagshub.com/iamprashantjain/Used-Car-Price-Predictor.mlflow")
 
