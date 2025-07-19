@@ -18,12 +18,8 @@ MLFLOW_STAGE = 'Production'
 
 def download_preprocessor_from_s3(bucket, key, local_path):
     s3 = boto3.client('s3')
-    if not os.path.exists(local_path):
-        s3.download_file(bucket, key, local_path)
-        print(f"✅ Preprocessor downloaded from S3 to {local_path}")
-    else:
-        print("✅ Preprocessor already exists locally.")
-
+    s3.download_file(bucket, key, local_path)
+    print(f"✅ Preprocessor downloaded from S3 to {local_path}")
 
 def load_preprocessor():
     download_preprocessor_from_s3(S3_BUCKET, S3_PREPROCESSOR_KEY, LOCAL_PREPROCESSOR_PATH)
