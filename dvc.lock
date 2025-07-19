@@ -5,8 +5,8 @@ stages:
     deps:
     - path: params.yaml
       hash: md5
-      md5: 4748832475ff5d3040279505052a76d2
-      size: 1118
+      md5: b8b3b491a2d0f351b3541b86d56e837b
+      size: 548
     - path: src/components/data_ingestion.py
       hash: md5
       md5: a35753def6650b9eccd5e2cbc4a75738
@@ -17,43 +17,17 @@ stages:
         - make
         - model
         - variant
-        - year
         - transmissionType
         - bodyType
         - fuelType
         - ownership
         - color
-        - 360DegreeCamera
-        - AlloyWheels
-        - AppleCarplayAndroidAuto
-        - Bluetooth
-        - CruiseControl
-        - GpsNavigation
-        - InfotainmentSystem
-        - LeatherSeats
-        - ParkingAssist
-        - PushButtonStart
-        - RearAc
-        - SpecialRegNo
-        - Sunroof/Moonroof
-        - TopModel
-        - Tpms
-        - VentilatedSeats
         data_ingestion.input_file_path: s3://prashant-mlops-bucket/cars24_v3.xlsx
         data_ingestion.numerical_cols:
+        - year
         - odometer
         - fitnessAge
-        - cashDownPayment
-        - emiStartingValue
-        - emiEndingValue
-        - roiMinDiscounted
-        - roiMaxDiscounted
-        - roiMinOriginal
-        - roiMaxOriginal
-        - emiOriginalStartingValue
-        - emiOriginalEndingValue
         - featureCount
-        - avgEmi
         data_ingestion.random_state: 42
         data_ingestion.test_size: 0.2
     outs:
@@ -94,21 +68,21 @@ stages:
       size: 48199
     - path: src/components/data_transformation.py
       hash: md5
-      md5: ef0665e46c6970b72ad5bbb7ac9927c7
-      size: 3618
+      md5: d1458bf17d512176b68c6fe71e1e3bd8
+      size: 3827
     outs:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: 4afb03e6c654811837b55db2ad967fed
-      size: 10701667
+      md5: 369306c2c043e2f62deb6a7c670ee4eb
+      size: 10294273
     - path: artifacts/data_transformation/X_train_transformed.csv
       hash: md5
-      md5: dfc6365de100ed7dc3f6a3d8bec7ec7e
-      size: 42754012
+      md5: 1ceaf235f76b51c488f9634c4256b002
+      size: 41126864
     - path: artifacts/data_transformation/preprocessor.pkl
       hash: md5
-      md5: 34b497721db79cf01f5ebf73879a558b
-      size: 52129
+      md5: 282ac06ee363bc718843cdd9e7018444
+      size: 45959
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
       md5: 1389a2b784ed26f8b4d2234257b955d1
@@ -122,12 +96,12 @@ stages:
     deps:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: 4afb03e6c654811837b55db2ad967fed
-      size: 10701667
+      md5: 369306c2c043e2f62deb6a7c670ee4eb
+      size: 10294273
     - path: artifacts/data_transformation/X_train_transformed.csv
       hash: md5
-      md5: dfc6365de100ed7dc3f6a3d8bec7ec7e
-      size: 42754012
+      md5: 1ceaf235f76b51c488f9634c4256b002
+      size: 41126864
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
       md5: 1389a2b784ed26f8b4d2234257b955d1
@@ -138,8 +112,8 @@ stages:
       size: 48199
     - path: params.yaml
       hash: md5
-      md5: 4748832475ff5d3040279505052a76d2
-      size: 1118
+      md5: b8b3b491a2d0f351b3541b86d56e837b
+      size: 548
     - path: src/components/model_trainer.py
       hash: md5
       md5: 615cb6d0e5be7efd0b36b340a193d576
@@ -147,23 +121,23 @@ stages:
     outs:
     - path: artifacts/model/model.pkl
       hash: md5
-      md5: 9c099513ca0aeaadfae0319c61d73d22
-      size: 5359057
+      md5: 7898df5c9aed41d020ff8e90041b43c9
+      size: 1951105
   model_evaluation:
     cmd: python src/components/model_evaluation.py
     deps:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: 4afb03e6c654811837b55db2ad967fed
-      size: 10701667
+      md5: 369306c2c043e2f62deb6a7c670ee4eb
+      size: 10294273
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
       md5: 1389a2b784ed26f8b4d2234257b955d1
       size: 12077
     - path: artifacts/model/model.pkl
       hash: md5
-      md5: 9c099513ca0aeaadfae0319c61d73d22
-      size: 5359057
+      md5: 7898df5c9aed41d020ff8e90041b43c9
+      size: 1951105
     - path: src/components/model_evaluation.py
       hash: md5
       md5: cdcddf406d1b5b852f7bd85d91bb8770
