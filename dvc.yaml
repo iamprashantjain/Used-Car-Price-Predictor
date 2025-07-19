@@ -3,41 +3,42 @@ stages:
     cmd: python src/components/data_ingestion.py
     deps:
       - src/components/data_ingestion.py
-      - artifacts/scraped_data/cars24_scraped_data.csv
+      - params.yaml
+    params:
+      - data_ingestion.test_size
+      - data_ingestion.random_state
+      - data_ingestion.numerical_cols
+      - data_ingestion.categorical_cols
+      - data_ingestion.input_file_path
     outs:
-      - artifacts/data_ingestion/raw/cars24_scraped_data.csv
-      - artifacts/data_ingestion/train/train.csv
-      - artifacts/data_ingestion/test/test.csv
-
+      - artifacts/data_ingestion/X_train.csv
+      - artifacts/data_ingestion/X_test.csv
+      - artifacts/data_ingestion/y_train.csv
+      - artifacts/data_ingestion/y_test.csv
 
   data_transformation:
     cmd: python src/components/data_transformation.py
     deps:
       - src/components/data_transformation.py
-      - artifacts/data_ingestion/train/train.csv
-      - artifacts/data_ingestion/test/test.csv
+      - artifacts/data_ingestion/X_train.csv
+      - artifacts/data_ingestion/X_test.csv
+      - artifacts/data_ingestion/y_train.csv
+      - artifacts/data_ingestion/y_test.csv
     outs:
-      - artifacts/transformed_data/train/train.csv
-      - artifacts/transformed_data/test/test.csv
+      - artifacts/data_transformation/X_train_transformed.csv
+      - artifacts/data_transformation/X_test_transformed.csv
+      - artifacts/data_transformation/y_train.csv
+      - artifacts/data_transformation/y_test.csv
+      - artifacts/data_transformation/preprocessor.pkl
+
 
   model_training:
     cmd: python src/components/model_trainer.py
     deps:
       - src/components/model_trainer.py
-      - artifacts/transformed_data/train/train.csv
-      - artifacts/transformed_data/test/test.csv
-      - artifacts/preprocessor/preprocessor.pkl
-      - artifacts/preprocessor/selected_features.pkl
-    params:
-      - model_training.model_alpha
+      - artifacts/data_transformation/X_train_transformed.csv
+      - artifacts/data_transformation/X_test_transformed.csv
+      - artifacts/data_transformation/y_train.csv
+      - artifacts/data_transformation/y_test.csv
     outs:
       - artifacts/model/model.pkl
-      - artifacts/model/model_info.json
-
-
-  register_model:
-    cmd: python src/components/register_model.py
-    deps:
-      - src/components/register_model.py
-      - artifacts/model/model_info.json
-    params: []
