@@ -31,14 +31,27 @@ stages:
       - artifacts/data_transformation/y_test.csv
       - artifacts/data_transformation/preprocessor.pkl
 
-
   model_training:
     cmd: python src/components/model_trainer.py
     deps:
       - src/components/model_trainer.py
+      - params.yaml
       - artifacts/data_transformation/X_train_transformed.csv
       - artifacts/data_transformation/X_test_transformed.csv
       - artifacts/data_transformation/y_train.csv
       - artifacts/data_transformation/y_test.csv
     outs:
       - artifacts/model/model.pkl
+
+  model_evaluation:
+    cmd: python src/components/model_evaluation.py
+    deps:
+      - src/components/model_evaluation.py
+      - artifacts/model/model.pkl
+      - artifacts/data_transformation/X_test_transformed.csv
+      - artifacts/data_transformation/y_test.csv
+
+  register_model:
+    cmd: python src/components/register_model.py
+    deps:
+      - src/components/register_model.py

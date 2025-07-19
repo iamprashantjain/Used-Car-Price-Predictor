@@ -5,8 +5,8 @@ stages:
     deps:
     - path: params.yaml
       hash: md5
-      md5: 0a138f9c8ac72ed2eb0af4f6b53ac548
-      size: 1045
+      md5: 1d131954af3314f9dc7c80837defbe31
+      size: 1105
     - path: src/components/data_ingestion.py
       hash: md5
       md5: c7af8033912358e484c4b83065957a01
@@ -137,12 +137,42 @@ stages:
       hash: md5
       md5: 9b310e32c90f00aec296ce095f294b34
       size: 60023
+    - path: params.yaml
+      hash: md5
+      md5: 1d131954af3314f9dc7c80837defbe31
+      size: 1105
     - path: src/components/model_trainer.py
       hash: md5
-      md5: 57d65e14514237e119e7e897f4f34b32
-      size: 3239
+      md5: 42fa92fd21e36c52fedb303fb3d2aa97
+      size: 5033
     outs:
     - path: artifacts/model/model.pkl
       hash: md5
       md5: e00f12c436406fda1f255f2d9b8f081c
       size: 5361377
+  model_evaluation:
+    cmd: python src/components/model_evaluation.py
+    deps:
+    - path: artifacts/data_transformation/X_test_transformed.csv
+      hash: md5
+      md5: c2dd61af58a4b320aa8f2f16d0eac93a
+      size: 57280265
+    - path: artifacts/data_transformation/y_test.csv
+      hash: md5
+      md5: c5560f465520c8a79d4b90da7c4765ea
+      size: 15035
+    - path: artifacts/model/model.pkl
+      hash: md5
+      md5: e00f12c436406fda1f255f2d9b8f081c
+      size: 5361377
+    - path: src/components/model_evaluation.py
+      hash: md5
+      md5: cdcddf406d1b5b852f7bd85d91bb8770
+      size: 1793
+  register_model:
+    cmd: python src/components/register_model.py
+    deps:
+    - path: src/components/register_model.py
+      hash: md5
+      md5: 132773e711065574229e34e51e926b0e
+      size: 2298
