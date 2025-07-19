@@ -5,46 +5,20 @@ data_ingestion:
   target_column: "listingPrice"
   
   numerical_cols:
+    - year
     - odometer
     - fitnessAge
-    - cashDownPayment
-    - emiStartingValue
-    - emiEndingValue
-    - roiMinDiscounted
-    - roiMaxDiscounted
-    - roiMinOriginal
-    - roiMaxOriginal
-    - emiOriginalStartingValue
-    - emiOriginalEndingValue
     - featureCount
-    - avgEmi
-  
   categorical_cols:
     - make
     - model
     - variant
-    - year
     - transmissionType
     - bodyType
     - fuelType
     - ownership
     - color
-    - 360DegreeCamera
-    - AlloyWheels
-    - AppleCarplayAndroidAuto
-    - Bluetooth
-    - CruiseControl
-    - GpsNavigation
-    - InfotainmentSystem
-    - LeatherSeats
-    - ParkingAssist
-    - PushButtonStart
-    - RearAc
-    - SpecialRegNo
-    - Sunroof/Moonroof
-    - TopModel
-    - Tpms
-    - VentilatedSeats
+
 
 
 model_training:

@@ -17,6 +17,11 @@ def load_data(X_train_path, X_test_path, y_train_path, y_test_path):
     try:
         X_train = pd.read_csv(X_train_path)
         X_test = pd.read_csv(X_test_path)
+        
+        required_cols = params["data_ingestion"]["numerical_cols"] + params["data_ingestion"]["categorical_cols"]
+        X_train = X_train[required_cols]
+        X_test = X_test[required_cols]
+
         y_train = pd.read_csv(y_train_path).squeeze()
         y_test = pd.read_csv(y_test_path).squeeze()
         logging.info("Data loaded successfully for transformation")
