@@ -16,20 +16,18 @@ MLFLOW_MODEL_NAME = 'used-car-price-regressor'
 MLFLOW_STAGE = 'Production'
 
 
-def download_preprocessor_from_s3(bucket, key, local_path):
-    s3 = boto3.client('s3')
-    s3.download_file(bucket, key, local_path)
-    print(f"✅ Preprocessor downloaded from S3 to {local_path}")
-
 def load_preprocessor():
-    download_preprocessor_from_s3(S3_BUCKET, S3_PREPROCESSOR_KEY, LOCAL_PREPROCESSOR_PATH)
-    return joblib.load(LOCAL_PREPROCESSOR_PATH)
+    preprocessor_path = 'artifacts/data_transformation/preprocessor.pkl'
+    if not os.path.exists(preprocessor_path):
+        raise FileNotFoundError(f"Preprocessor file not found at {preprocessor_path}. Please ensure it is downloaded via Docker or DVC before running the app.")
+    print(f"Loading preprocessor from {preprocessor_path}")
+    return joblib.load(preprocessor_path)
 
 
 def load_model_from_mlflow():
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     model_uri = f"models:/{MLFLOW_MODEL_NAME}/{MLFLOW_STAGE}"
-    print(f"✅ Loading model from MLflow: {model_uri}")
+    print(f"Loading model from MLflow: {model_uri}")
     return mlflow.pyfunc.load_model(model_uri)
 
 
@@ -69,4 +67,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
