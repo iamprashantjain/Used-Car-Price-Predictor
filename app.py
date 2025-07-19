@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
 import joblib
 import mlflow.pyfunc
@@ -41,45 +41,35 @@ preprocessor = load_preprocessor()
 model = load_model_from_mlflow()
 
 INPUT_COLUMNS = [
-    "make", "model", "variant", "year", "transmissionType", "bodyType", "fuelType",
-    "ownership", "color", "odometer", "fitnessAge", "cashDownPayment",
-    "emiStartingValue", "emiEndingValue", "roiMinDiscounted", "roiMaxDiscounted",
-    "roiMinOriginal", "roiMaxOriginal", "emiOriginalStartingValue", "emiOriginalEndingValue",
-    "360DegreeCamera", "AlloyWheels", "AppleCarplayAndroidAuto", "Bluetooth",
-    "CruiseControl", "GpsNavigation", "InfotainmentSystem", "LeatherSeats",
-    "ParkingAssist", "PushButtonStart", "RearAc", "SpecialRegNo", "Sunroof/Moonroof",
-    "TopModel", "Tpms", "VentilatedSeats", "featureCount", "avgEmi"
+    "make", "model", "variant", "year", "transmissionType",
+    "bodyType", "fuelType", "ownership", "color",
+    "odometer", "fitnessAge", "featureCount"
 ]
 
 
 @app.route('/', methods=['GET', 'POST'])
-def home():
-    prediction = None
-    error = None
-
+def predict():
     if request.method == 'POST':
-        input_data = {col: request.form.get(col) for col in INPUT_COLUMNS}
+        input_data = {col: request.form[col] for col in INPUT_COLUMNS}
+
+        # Convert types
+        input_data['year'] = int(input_data['year'])
+        input_data['ownership'] = int(input_data['ownership'])
+        input_data['odometer'] = float(input_data['odometer'])
+        input_data['fitnessAge'] = float(input_data['fitnessAge'])
+        input_data['featureCount'] = int(input_data['featureCount'])
+
+        input_df = pd.DataFrame([input_data])
 
         try:
-            input_df = pd.DataFrame([input_data])
-            # Cast numerics where required (adjust based on your data)
-            numeric_cols = ["year", "odometer", "fitnessAge", "cashDownPayment",
-                            "emiStartingValue", "emiEndingValue", "roiMinDiscounted", "roiMaxDiscounted",
-                            "roiMinOriginal", "roiMaxOriginal", "emiOriginalStartingValue", "emiOriginalEndingValue",
-                            "360DegreeCamera", "AlloyWheels", "AppleCarplayAndroidAuto", "Bluetooth",
-                            "CruiseControl", "GpsNavigation", "InfotainmentSystem", "LeatherSeats",
-                            "ParkingAssist", "PushButtonStart", "RearAc", "SpecialRegNo", "Sunroof/Moonroof",
-                            "TopModel", "Tpms", "VentilatedSeats", "featureCount", "avgEmi"]
-            for col in numeric_cols:
-                input_df[col] = pd.to_numeric(input_df[col], errors='coerce')
-
             transformed_data = preprocessor.transform(input_df)
-            prediction = model.predict(transformed_data)[0]
-
+            prediction = model.predict(transformed_data)
+            price = float(prediction[0])
+            return render_template('index.html', prediction=price)
         except Exception as e:
-            error = f"Prediction failed: {str(e)}"
+            return render_template('index.html', error=str(e))
 
-    return render_template('index.html', prediction=prediction, error=error)
+    return render_template('index.html')
 
 
 if __name__ == '__main__':

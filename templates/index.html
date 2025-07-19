@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Used Car Price Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, select { margin-bottom: 10px; width: 300px; height: 30px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+        .result { margin-top: 20px; font-size: 18px; color: green; font-weight: bold; }
+        .error { margin-top: 20px; font-size: 18px; color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h2>🚗 Used Car Listing Price Prediction</h2>
+
+<form method="POST">
+    <label>Make</label>
+    <input type="text" name="make" required>
+
+    <label>Model</label>
+    <input type="text" name="model" required>
+
+    <label>Variant</label>
+    <input type="text" name="variant" required>
+
+    <label>Year</label>
+    <input type="number" name="year" required>
+
+    <label>Transmission Type</label>
+    <input type="text" name="transmissionType" required>
+
+    <label>Body Type</label>
+    <input type="text" name="bodyType" required>
+
+    <label>Fuel Type</label>
+    <input type="text" name="fuelType" required>
+
+    <label>Ownership (e.g., 1 for first owner)</label>
+    <input type="number" name="ownership" required>
+
+    <label>Color</label>
+    <input type="text" name="color" required>
+
+    <label>Odometer (in kms)</label>
+    <input type="number" name="odometer" required>
+
+    <label>Fitness Age</label>
+    <input type="number" name="fitnessAge" required>
+
+    <label>Feature Count</label>
+    <input type="number" name="featureCount" required>
+
+    <button type="submit">Predict</button>
+</form>
+
+{% if prediction %}
+<div class="result">
+    ✅ Predicted Listing Price: ₹ {{ prediction | round(2) }}
+</div>
+{% endif %}
+
+{% if error %}
+<div class="error">
+    ❌ Error: {{ error }}
+</div>
+{% endif %}
+
+</body>
+</html>
