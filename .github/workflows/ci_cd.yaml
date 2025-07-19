@@ -1,4 +1,4 @@
-name: DVC Pipeline with AWS S3
+name: DVC Pipeline with AWS S3 and Dagshub MLflow
 
 on:
   push:
@@ -13,6 +13,11 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       PYTHONPATH: ${{ github.workspace }}
+      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+      # MLflow authentication for Dagshub
+      MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
 
     steps:
       - name: Checkout Repository
@@ -24,16 +29,18 @@ jobs:
           python-version: '3.10'
 
       - name: Install Python Dependencies
-        run: pip install -r requirements_dev.txt --quiet --no-cache-dir
+        run: pip install --quiet --no-cache-dir -r requirements_dev.txt
 
       - name: Install DVC with S3 Support
-        run: pip install 'dvc[s3]' --quiet --no-cache-dir
+        run: pip install --quiet --no-cache-dir 'dvc[s3]'
 
       - name: Pull Data from S3 (DVC)
         run: dvc pull --quiet
 
       - name: Reproduce DVC Pipeline
-        run: dvc repro --quiet
+        run: |
+          echo "Running DVC pipeline..."
+          dvc repro --quiet
 
       - name: Push Artifacts to S3 (DVC)
         run: dvc push --quiet
