@@ -5,8 +5,8 @@ stages:
     deps:
     - path: params.yaml
       hash: md5
-      md5: b8b3b491a2d0f351b3541b86d56e837b
-      size: 548
+      md5: 37cba87985ce3d9d21684e4498f5943e
+      size: 544
     - path: src/components/data_ingestion.py
       hash: md5
       md5: a35753def6650b9eccd5e2cbc4a75738
@@ -112,8 +112,8 @@ stages:
       size: 48199
     - path: params.yaml
       hash: md5
-      md5: b8b3b491a2d0f351b3541b86d56e837b
-      size: 548
+      md5: 37cba87985ce3d9d21684e4498f5943e
+      size: 544
     - path: src/components/model_trainer.py
       hash: md5
       md5: 615cb6d0e5be7efd0b36b340a193d576

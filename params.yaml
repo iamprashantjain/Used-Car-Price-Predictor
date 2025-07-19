@@ -27,8 +27,6 @@ model_training:
     max_depth: 10
     min_samples_split: 2
 
-
-
 model_evaluation:
   params:
     current_accuracy: 80
