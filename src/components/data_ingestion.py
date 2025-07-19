@@ -15,10 +15,7 @@ with open("params.yaml", "r") as f:
 
 test_size = params["data_ingestion"]["test_size"]
 random_state = params["data_ingestion"]["random_state"]
-
-numerical_cols = params["data_ingestion"]["numerical_cols"]
-categorical_cols = params["data_ingestion"]["categorical_cols"]
-
+input_file_path = params["data_ingestion"]["input_file_path"]
 
 def read_data_s3(path):
     try:
@@ -35,36 +32,12 @@ def read_data_s3(path):
         raise customexception(e, sys)
 
 
-def preprocess_data(df):
+def split_data(df, target_column, test_size, random_state):
     try:
-        numerical_imputer = SimpleImputer(strategy='mean')
-        categorical_imputer = SimpleImputer(strategy='most_frequent')
-
-        df[numerical_cols] = numerical_imputer.fit_transform(df[numerical_cols])
-        df[categorical_cols] = categorical_imputer.fit_transform(df[categorical_cols])
-
-        encoder = OneHotEncoder(sparse=False, drop='first')
-        encoded_categorical = encoder.fit_transform(df[categorical_cols])
-        encoded_df = pd.DataFrame(encoded_categorical, columns=encoder.get_feature_names_out(categorical_cols))
-
-        df_encoded = pd.concat([df[numerical_cols], encoded_df], axis=1)
-
-        X = df_encoded.drop(columns=["listingPrice"])
-        y = df_encoded["listingPrice"]
-
-        logging.info("Preprocessing completed")
-        return X, y
-
-    except Exception as e:
-        logging.error("Preprocessing failed", exc_info=True)
-        raise customexception(e, sys)
-
-
-def split_data(X, y, test_size, random_state):
-    try:
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=random_state
-        )
+        df.dropna(subset=[target_column], inplace=True)
+        X = df.drop(columns=[target_column])
+        y = df[target_column]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
         logging.info(f"Train-test split done with test_size={test_size}")
         return X_train, X_test, y_train, y_test
     except Exception as e:
@@ -72,33 +45,26 @@ def split_data(X, y, test_size, random_state):
         raise customexception(e, sys)
 
 
-def data_ingestion_pipeline(path, output_dir="artifacts/data_ingestion"):
+def data_ingestion_pipeline(path, target_column, output_dir="artifacts/data_ingestion"):
     try:
         os.makedirs(output_dir, exist_ok=True)
-
         df = read_data_s3(path)
-        X, y = preprocess_data(df)
-        X_train, X_test, y_train, y_test = split_data(X, y, test_size, random_state)
+        X_train, X_test, y_train, y_test = split_data(df, target_column, test_size, random_state)
 
         X_train.to_csv(f"{output_dir}/X_train.csv", index=False)
         X_test.to_csv(f"{output_dir}/X_test.csv", index=False)
         y_train.to_csv(f"{output_dir}/y_train.csv", index=False)
         y_test.to_csv(f"{output_dir}/y_test.csv", index=False)
 
-        logging.info(f"Data ingestion completed. Data saved in {output_dir}")
-        return (
-            f"{output_dir}/X_train.csv",
-            f"{output_dir}/X_test.csv",
-            f"{output_dir}/y_train.csv",
-            f"{output_dir}/y_test.csv"
-        )
-
+        logging.info(f"Data ingestion completed. Files saved in {output_dir}")
+        return (f"{output_dir}/X_train.csv", f"{output_dir}/X_test.csv",
+                f"{output_dir}/y_train.csv", f"{output_dir}/y_test.csv")
     except Exception as e:
         logging.error("Data ingestion pipeline failed", exc_info=True)
         raise customexception(e, sys)
 
 
 if __name__ == "__main__":
-    s3_path = params["data_ingestion"]["input_file_path"]
-    X_train, X_test, y_train, y_test = data_ingestion_pipeline(s3_path)
+    target_column = params["data_ingestion"]["target_column"]
+    X_train, X_test, y_train, y_test = data_ingestion_pipeline(input_file_path, target_column)
     print(f"Data Saved:\nX_train: {X_train}\nX_test: {X_test}\ny_train: {y_train}\ny_test: {y_test}")

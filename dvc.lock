@@ -5,12 +5,12 @@ stages:
     deps:
     - path: params.yaml
       hash: md5
-      md5: 1d131954af3314f9dc7c80837defbe31
-      size: 1105
+      md5: 4748832475ff5d3040279505052a76d2
+      size: 1118
     - path: src/components/data_ingestion.py
       hash: md5
-      md5: c7af8033912358e484c4b83065957a01
-      size: 3867
+      md5: a35753def6650b9eccd5e2cbc4a75738
+      size: 2921
     params:
       params.yaml:
         data_ingestion.categorical_cols:
@@ -41,7 +41,6 @@ stages:
         - VentilatedSeats
         data_ingestion.input_file_path: s3://prashant-mlops-bucket/cars24_v3.xlsx
         data_ingestion.numerical_cols:
-        - listingPrice
         - odometer
         - fitnessAge
         - cashDownPayment
@@ -60,111 +59,111 @@ stages:
     outs:
     - path: artifacts/data_ingestion/X_test.csv
       hash: md5
-      md5: 2a8d31f836daa28257197883dad9ca0a
-      size: 11463672
+      md5: ffac7aaca73f5d1b7d418c700f182987
+      size: 222926
     - path: artifacts/data_ingestion/X_train.csv
       hash: md5
-      md5: 21148174d7895880cc7708a3ffba48ae
-      size: 45693688
+      md5: 83d44feb51949888150c04c259baae2c
+      size: 888239
     - path: artifacts/data_ingestion/y_test.csv
       hash: md5
-      md5: c5560f465520c8a79d4b90da7c4765ea
-      size: 15035
+      md5: 1389a2b784ed26f8b4d2234257b955d1
+      size: 12077
     - path: artifacts/data_ingestion/y_train.csv
       hash: md5
-      md5: 9b310e32c90f00aec296ce095f294b34
-      size: 60023
+      md5: 281d0b6feaee8dda74153b89d16fb733
+      size: 48199
   data_transformation:
     cmd: python src/components/data_transformation.py
     deps:
     - path: artifacts/data_ingestion/X_test.csv
       hash: md5
-      md5: 2a8d31f836daa28257197883dad9ca0a
-      size: 11463672
+      md5: ffac7aaca73f5d1b7d418c700f182987
+      size: 222926
     - path: artifacts/data_ingestion/X_train.csv
       hash: md5
-      md5: 21148174d7895880cc7708a3ffba48ae
-      size: 45693688
+      md5: 83d44feb51949888150c04c259baae2c
+      size: 888239
     - path: artifacts/data_ingestion/y_test.csv
       hash: md5
-      md5: c5560f465520c8a79d4b90da7c4765ea
-      size: 15035
+      md5: 1389a2b784ed26f8b4d2234257b955d1
+      size: 12077
     - path: artifacts/data_ingestion/y_train.csv
       hash: md5
-      md5: 9b310e32c90f00aec296ce095f294b34
-      size: 60023
+      md5: 281d0b6feaee8dda74153b89d16fb733
+      size: 48199
     - path: src/components/data_transformation.py
       hash: md5
-      md5: a11cd6982685debf83dded965b662b02
-      size: 3533
+      md5: ef0665e46c6970b72ad5bbb7ac9927c7
+      size: 3618
     outs:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: c2dd61af58a4b320aa8f2f16d0eac93a
-      size: 57280265
+      md5: 4afb03e6c654811837b55db2ad967fed
+      size: 10701667
     - path: artifacts/data_transformation/X_train_transformed.csv
       hash: md5
-      md5: 8bc0c8e1eb0dd4d6900d43fe64664bc6
-      size: 228938642
+      md5: dfc6365de100ed7dc3f6a3d8bec7ec7e
+      size: 42754012
     - path: artifacts/data_transformation/preprocessor.pkl
       hash: md5
-      md5: d4583e610724fbb6a90ae6883958112e
-      size: 236960
+      md5: 34b497721db79cf01f5ebf73879a558b
+      size: 52129
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
-      md5: c5560f465520c8a79d4b90da7c4765ea
-      size: 15035
+      md5: 1389a2b784ed26f8b4d2234257b955d1
+      size: 12077
     - path: artifacts/data_transformation/y_train.csv
       hash: md5
-      md5: 9b310e32c90f00aec296ce095f294b34
-      size: 60023
+      md5: 281d0b6feaee8dda74153b89d16fb733
+      size: 48199
   model_training:
     cmd: python src/components/model_trainer.py
     deps:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: c2dd61af58a4b320aa8f2f16d0eac93a
-      size: 57280265
+      md5: 4afb03e6c654811837b55db2ad967fed
+      size: 10701667
     - path: artifacts/data_transformation/X_train_transformed.csv
       hash: md5
-      md5: 8bc0c8e1eb0dd4d6900d43fe64664bc6
-      size: 228938642
+      md5: dfc6365de100ed7dc3f6a3d8bec7ec7e
+      size: 42754012
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
-      md5: c5560f465520c8a79d4b90da7c4765ea
-      size: 15035
+      md5: 1389a2b784ed26f8b4d2234257b955d1
+      size: 12077
     - path: artifacts/data_transformation/y_train.csv
       hash: md5
-      md5: 9b310e32c90f00aec296ce095f294b34
-      size: 60023
+      md5: 281d0b6feaee8dda74153b89d16fb733
+      size: 48199
     - path: params.yaml
       hash: md5
-      md5: 1d131954af3314f9dc7c80837defbe31
-      size: 1105
+      md5: 4748832475ff5d3040279505052a76d2
+      size: 1118
     - path: src/components/model_trainer.py
       hash: md5
-      md5: 42fa92fd21e36c52fedb303fb3d2aa97
-      size: 5033
+      md5: 615cb6d0e5be7efd0b36b340a193d576
+      size: 1646
     outs:
     - path: artifacts/model/model.pkl
       hash: md5
-      md5: e00f12c436406fda1f255f2d9b8f081c
-      size: 5361377
+      md5: 9c099513ca0aeaadfae0319c61d73d22
+      size: 5359057
   model_evaluation:
     cmd: python src/components/model_evaluation.py
     deps:
     - path: artifacts/data_transformation/X_test_transformed.csv
       hash: md5
-      md5: c2dd61af58a4b320aa8f2f16d0eac93a
-      size: 57280265
+      md5: 4afb03e6c654811837b55db2ad967fed
+      size: 10701667
     - path: artifacts/data_transformation/y_test.csv
       hash: md5
-      md5: c5560f465520c8a79d4b90da7c4765ea
-      size: 15035
+      md5: 1389a2b784ed26f8b4d2234257b955d1
+      size: 12077
     - path: artifacts/model/model.pkl
       hash: md5
-      md5: e00f12c436406fda1f255f2d9b8f081c
-      size: 5361377
+      md5: 9c099513ca0aeaadfae0319c61d73d22
+      size: 5359057
     - path: src/components/model_evaluation.py
       hash: md5
       md5: cdcddf406d1b5b852f7bd85d91bb8770
@@ -174,5 +173,5 @@ stages:
     deps:
     - path: src/components/register_model.py
       hash: md5
-      md5: 132773e711065574229e34e51e926b0e
-      size: 2298
+      md5: d3e669e92d757334ed2002cee51e6102
+      size: 2365

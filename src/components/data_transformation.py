@@ -1,8 +1,8 @@
-import joblib
-import pandas as pd
-import numpy as np
+import yaml
 import os
 import sys
+import pandas as pd
+import joblib
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -10,11 +10,14 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.exception.exception import customexception
 from src.logger.logging import logging
 
+with open("params.yaml", "r") as f:
+    params = yaml.safe_load(f)
+    
 def load_data(X_train_path, X_test_path, y_train_path, y_test_path):
     try:
         X_train = pd.read_csv(X_train_path)
         X_test = pd.read_csv(X_test_path)
-        y_train = pd.read_csv(y_train_path).squeeze()  # Convert to Series
+        y_train = pd.read_csv(y_train_path).squeeze()
         y_test = pd.read_csv(y_test_path).squeeze()
         logging.info("Data loaded successfully for transformation")
         return X_train, X_test, y_train, y_test
@@ -27,17 +30,22 @@ def data_transformation(X_train, X_test, y_train, y_test, save_path="artifacts/d
     try:
         os.makedirs(save_path, exist_ok=True)
 
-        numerical_cols = X_train.select_dtypes(include=['number']).columns.tolist()
-        categorical_cols = X_train.select_dtypes(include=['object', 'bool']).columns.tolist()
+        numerical_cols = params["data_ingestion"]["numerical_cols"]
+        categorical_cols = params["data_ingestion"]["categorical_cols"]
+
+        logging.info(f"Numerical columns: {numerical_cols}")
+        logging.info(f"Categorical columns: {categorical_cols}")
 
         numeric_pipeline = Pipeline([
             ('imputer', SimpleImputer(strategy='mean')),
             ('scaler', StandardScaler())
         ])
+
         categorical_pipeline = Pipeline([
             ('imputer', SimpleImputer(strategy='most_frequent')),
             ('encoder', OneHotEncoder(drop='first', sparse=False, handle_unknown='ignore'))
         ])
+
         preprocessor = ColumnTransformer([
             ('num', numeric_pipeline, numerical_cols),
             ('cat', categorical_pipeline, categorical_cols)
@@ -46,21 +54,21 @@ def data_transformation(X_train, X_test, y_train, y_test, save_path="artifacts/d
         X_train_transformed = preprocessor.fit_transform(X_train)
         X_test_transformed = preprocessor.transform(X_test)
 
-        # Save transformed datasets
         pd.DataFrame(X_train_transformed).to_csv(os.path.join(save_path, 'X_train_transformed.csv'), index=False)
         pd.DataFrame(X_test_transformed).to_csv(os.path.join(save_path, 'X_test_transformed.csv'), index=False)
         y_train.to_csv(os.path.join(save_path, 'y_train.csv'), index=False)
         y_test.to_csv(os.path.join(save_path, 'y_test.csv'), index=False)
 
-        # Save preprocessor
         joblib.dump(preprocessor, os.path.join(save_path, "preprocessor.pkl"))
 
         logging.info("Data transformation completed and preprocessor saved.")
-        return (os.path.join(save_path, 'X_train_transformed.csv'),
-                os.path.join(save_path, 'X_test_transformed.csv'),
-                os.path.join(save_path, 'y_train.csv'),
-                os.path.join(save_path, 'y_test.csv'),
-                os.path.join(save_path, "preprocessor.pkl"))
+        return (
+            os.path.join(save_path, 'X_train_transformed.csv'),
+            os.path.join(save_path, 'X_test_transformed.csv'),
+            os.path.join(save_path, 'y_train.csv'),
+            os.path.join(save_path, 'y_test.csv'),
+            os.path.join(save_path, "preprocessor.pkl")
+        )
     except Exception as e:
         logging.error("Data transformation failed", exc_info=True)
         raise customexception(e, sys)

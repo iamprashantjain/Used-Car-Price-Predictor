@@ -2,9 +2,9 @@ data_ingestion:
   input_file_path: s3://prashant-mlops-bucket/cars24_v3.xlsx
   test_size: 0.2
   random_state: 42
+  target_column: "listingPrice"
   
   numerical_cols:
-    - listingPrice
     - odometer
     - fitnessAge
     - cashDownPayment
